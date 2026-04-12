@@ -37,3 +37,21 @@ def get_bpmn_resources(file_path: str) -> list:
             resources.append(elem.get("name"))
     
     return resources
+
+# TODO: Check if multiple start events are possible
+def get_start_event(bpmn_model: pm4py.BPMN) -> str:
+    """
+    Returns the name of the start event in a BPMN model
+    """
+    for node in bpmn_model.get_nodes():
+        if isinstance(node, pm4py.BPMN.StartEvent):
+            return node.get_name()
+        
+# TODO: Check if multiple end events are possible
+def get_end_event(bpmn_model: pm4py.BPMN) -> str:
+    """
+    Returns the name of the end event in a BPMN model
+    """
+    for node in bpmn_model.get_nodes():
+        if isinstance(node, pm4py.BPMN.EndEvent):
+            return node.get_name()
