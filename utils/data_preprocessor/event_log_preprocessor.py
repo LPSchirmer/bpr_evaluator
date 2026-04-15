@@ -53,3 +53,21 @@ def transform_data_types(event_log: pd.DataFrame) -> pd.DataFrame:
         
     event_log.sort_values(by=["case:concept:name", "time:timestamp"], ascending=[True, True])
     return event_log
+
+def restructure_event_log(event_log: pd.DataFrame) -> pd.DataFrame:
+    """
+    Restructures an event log with 2 timestamp columns (start time and completion time) to an event log with 1 timestamp column and an additional lifecycle:transition column
+    """
+    start_event_log = event_log.copy()
+    start_event_log["time:timestamp"] = start_event_log["start_time"]
+    start_event_log["lifecycle:transition"] = "start"
+
+    end_event_log = event_log.copy()
+    end_event_log["time:timestamp"] = end_event_log["completion_time"]
+    end_event_log["lifecycle:transition"] = "complete"
+
+    restructured_event_log = pd.concat([start_event_log, end_event_log], ignore_index=True)
+
+    restructured_event_log = restructured_event_log.drop(columns=["start_time", "completion_time"])
+
+    return restructured_event_log
