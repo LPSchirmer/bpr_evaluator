@@ -4,9 +4,9 @@ import pm4py
 # Time metrics
 def calculate_mean_cycle_time(event_log: pd.DataFrame) -> float:
     """
-    Calculates the mean duration of a process instance (in seconds) in the event log
+    Calculates the mean duration of a process instance (in minutes) in the event log
     """
-    return event_log.groupby("case:concept:name")["time:timestamp"].apply(lambda x: (x.max() - x.min()).total_seconds()).mean()
+    return event_log.groupby("case:concept:name")["time:timestamp"].apply(lambda x: (x.max() - x.min()).total_seconds() / 60).mean()
 
 # Cost statistics
 def calculate_mean_process_costs(event_log: pd.DataFrame) -> float:
