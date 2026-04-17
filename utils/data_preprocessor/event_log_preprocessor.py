@@ -9,6 +9,8 @@ event_log_column_map = {
     "case:concept:name":["case_id", "case", "caseid", "case id", "instance_id", "instance", "instanceid", "instance id"],
     "concept:name":["activity", "activity_name", "event", "event_name", "task", "operation", "step"],
     "time:timestamp":["timestamp", "time", "datetime", "date", "eventtime"],
+    "time:start_timestamp": ["start_time", "start_timestamp", "start time", "start timestamp"],
+    "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp" "completion_time", "completion_timestamp", "completion time", "completion timestamp"],
     "org:resource":["resource", "user", "worker", "agent", "performer"],
     "cost:amount":["cost", "costs"],
     "lifecycle:transition":["lifecycle", "transition", "event_type", "eventtype"]
@@ -59,15 +61,15 @@ def restructure_event_log(event_log: pd.DataFrame) -> pd.DataFrame:
     Restructures an event log with 2 timestamp columns (start time and completion time) to an event log with 1 timestamp column and an additional lifecycle:transition column
     """
     start_event_log = event_log.copy()
-    start_event_log["time:timestamp"] = start_event_log["start_time"]
+    start_event_log["time:timestamp"] = start_event_log["time:start_timestamp"]
     start_event_log["lifecycle:transition"] = "start"
 
     end_event_log = event_log.copy()
-    end_event_log["time:timestamp"] = end_event_log["completion_time"]
+    end_event_log["time:timestamp"] = end_event_log["time:completion_timestamp"]
     end_event_log["lifecycle:transition"] = "complete"
 
     restructured_event_log = pd.concat([start_event_log, end_event_log], ignore_index=True)
 
-    restructured_event_log = restructured_event_log.drop(columns=["start_time", "completion_time"])
+    restructured_event_log = restructured_event_log.drop(columns=["time:start_timestamp", "time:completion_timestamp"])
 
     return restructured_event_log
