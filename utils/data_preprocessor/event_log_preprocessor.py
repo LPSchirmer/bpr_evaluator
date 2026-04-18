@@ -10,7 +10,7 @@ event_log_column_map = {
     "concept:name":["activity", "activity_name", "event", "event_name", "task", "operation", "step"],
     "time:timestamp":["timestamp", "time", "datetime", "date", "eventtime"],
     "time:start_timestamp": ["start_time", "start_timestamp", "start time", "start timestamp"],
-    "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp" "completion_time", "completion_timestamp", "completion time", "completion timestamp"],
+    "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp", "completion_time", "completion_timestamp", "completion time", "completion timestamp"],
     "org:resource":["resource", "user", "worker", "agent", "performer"],
     "cost:amount":["cost", "costs"],
     "lifecycle:transition":["lifecycle", "transition", "event_type", "eventtype"]
