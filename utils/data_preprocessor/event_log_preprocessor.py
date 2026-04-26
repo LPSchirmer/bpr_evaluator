@@ -7,7 +7,7 @@ required_event_log_columns = ["case:concept:name", "concept:name", "time:timesta
 # Required event log column names
 event_log_column_map = {
     "case:concept:name":["case_id", "case", "caseid", "case id", "instance_id", "instance", "instanceid", "instance id"],
-    "concept:name":["activity", "activity_name", "event", "event_name", "task", "operation", "step"],
+    "concept:name":["activity", "activity_name", "event", "event_name", "task", "operation", "step", "event type"],
     "time:timestamp":["timestamp", "time", "datetime", "date", "eventtime"],
     "time:start_timestamp": ["start_time", "start_timestamp", "start time", "start timestamp"],
     "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp", "completion_time", "completion_timestamp", "completion time", "completion timestamp"],
@@ -45,15 +45,18 @@ def check_for_required_columns(event_log: pd.DataFrame) -> list:
 
 def transform_data_types(event_log: pd.DataFrame) -> pd.DataFrame:
     """
-    Converts data types into a format suitable for the event log analyzer
+    Converts data types into a format suitable for the event log analyzer, sorts it and deletes rows with null values in required columns
     """
     event_log["time:timestamp"] = pd.to_datetime(event_log["time:timestamp"], errors="coerce")
 
     event_log["case:concept:name"] = event_log["case:concept:name"].astype(str)
 
     event_log["cost:amount"] = pd.to_numeric(event_log["cost:amount"], errors="coerce")
-        
-    event_log.sort_values(by=["case:concept:name", "time:timestamp"], ascending=[True, True])
+    
+    event_log = event_log.sort_values(by=["case:concept:name", "time:timestamp"], ascending=[True, True])
+
+    event_log = event_log.dropna(subset=required_event_log_columns)
+
     return event_log
 
 def restructure_event_log(event_log: pd.DataFrame) -> pd.DataFrame:
