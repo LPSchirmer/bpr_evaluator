@@ -55,8 +55,13 @@ def transform_data_types(event_log: pd.DataFrame) -> pd.DataFrame:
     
     event_log = event_log.sort_values(by=["case:concept:name", "time:timestamp"], ascending=[True, True])
 
-    event_log = event_log.dropna(subset=required_event_log_columns)
+    return event_log
 
+def drop_rows_with_null_values(event_log: pd.DataFrame) -> pd.DataFrame:
+    """
+    Drops rows in the event log whith null values in required event log columns
+    """
+    event_log = event_log.dropna(subset=required_event_log_columns)
     return event_log
 
 def restructure_event_log(event_log: pd.DataFrame) -> pd.DataFrame:
