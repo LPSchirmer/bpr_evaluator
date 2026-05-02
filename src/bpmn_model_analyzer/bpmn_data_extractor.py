@@ -1,57 +1,51 @@
 import pm4py
-import xml.etree.ElementTree as ET
 
-def get_bpmn_tasks(bpmn_model: pm4py.BPMN) -> list:
+def get_bpmn_tasks(bpmn_model: pm4py.BPMN) -> dict:
     """
-    Returns a list with the names of all taks in the BPMN model
+    Returns a dictionary with the id's (keys) and names (values) of all tasks in the BPMN model
     """
-    return [node.get_name() for node in bpmn_model.get_nodes() if isinstance(node, pm4py.BPMN.Task)]
+    return {node.get_id(): node.get_name() for node in bpmn_model.get_nodes() if isinstance(node, pm4py.BPMN.Task)}
 
-def get_xor_or_gateways_with_multiple_outgoing_flows(bpmn_model: pm4py.BPMN) -> dict:
+def is_task(node: pm4py.BPMN.BPMNNode) -> bool:
     """
-    Returns a dictionary with all XOR and OR Gateways with multiple outgoing sequence flows in the BPMN model with their corresponding outgoing sequence flows
+    Checks if a BPMN node is a task
     """
-    xor_or_gateways_with_outgoing_flows = {}
-    for flow in bpmn_model.get_flows():
-        if isinstance(flow, pm4py.BPMN.SequenceFlow):
-            source = flow.get_source()
-            if isinstance(source, (pm4py.BPMN.ExclusiveGateway, pm4py.BPMN.InclusiveGateway)):
-                if len(source.get_out_arcs()) > 1:
-                    key = source
-                    value = flow.get_target().get_name()
-                    xor_or_gateways_with_outgoing_flows.setdefault(key, []).append(value)
+    return isinstance(node, pm4py.BPMN.Task)
 
-    return xor_or_gateways_with_outgoing_flows
-
-def get_bpmn_resources(file_path: str) -> list:
+def get_first_target_tasks_from_gateway(flow: pm4py.BPMN.Flow, visited = None) -> set:
     """
-    Returns a list with all resources in the BPMN model (based on lanes)
+    Returns the first target tasks that are reached from a given gateway flow
     """
-    bpmn_model = ET.parse(file_path)
-    root = bpmn_model.getroot()
+    if visited is None: 
+        visited = set()
 
-    resources = []
+    target = flow.get_target()
 
-    for elem in root.iter():
-        if elem.tag.endswith("lane") and elem.get("name"):
-            resources.append(elem.get("name"))
+    if target in visited: 
+        return set()
     
-    return resources
+    visited.add(target)
 
-# TODO: Check if multiple start events are possible
-def get_start_event(bpmn_model: pm4py.BPMN) -> str:
+    if is_task(target):
+        return {target.get_name()}
+
+    tasks = set()
+    for out_flow in target.get_out_arcs():
+        tasks.update(get_first_target_tasks_from_gateway(out_flow, visited))
+
+    return tasks
+
+def get_xor_split_gateway_target_tasks(bpmn_model: pm4py.BPMN) -> dict:
     """
-    Returns the name of the start event in a BPMN model
+    Returns a dictionary with the id's of the gateways (XOR Split) as keys and the list of first target tasks as values
     """
+    gateways = {}
     for node in bpmn_model.get_nodes():
-        if isinstance(node, pm4py.BPMN.StartEvent):
-            return node.get_name()
-        
-# TODO: Check if multiple end events are possible
-def get_end_event(bpmn_model: pm4py.BPMN) -> str:
-    """
-    Returns the name of the end event in a BPMN model
-    """
-    for node in bpmn_model.get_nodes():
-        if isinstance(node, pm4py.BPMN.EndEvent):
-            return node.get_name()
+        if isinstance(node, pm4py.BPMN.ExclusiveGateway):
+            out_arcs = node.get_out_arcs()
+            if len(out_arcs) > 1:
+                targets = []
+                for flow in out_arcs:
+                    targets.extend(list(get_first_target_tasks_from_gateway(flow)))
+                gateways[node.id] = targets
+    return gateways
