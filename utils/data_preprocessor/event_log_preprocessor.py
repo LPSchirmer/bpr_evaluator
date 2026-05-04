@@ -2,17 +2,16 @@ import pandas as pd
 import csv
 
 # Required event log columns 
-required_event_log_columns = ["case:concept:name", "concept:name", "time:timestamp", "org:resource", "cost:amount"]
+required_event_log_columns = ["case:concept:name", "concept:name", "time:timestamp", "cost:amount"]
 
 # Required event log column names
 event_log_column_map = {
-    "case:concept:name":["case_id", "case", "caseid", "case id", "instance_id", "instance", "instanceid", "instance id"],
+    "case:concept:name":["case_id", "case", "caseid", "case id", "instance_id", "instance", "instanceid", "instance id", "employee_id"],
     "concept:name":["activity", "activity_name", "event", "event_name", "task", "operation", "step", "event type"],
     "time:timestamp":["timestamp", "time", "datetime", "date", "eventtime"],
     "time:start_timestamp": ["start_time", "start_timestamp", "start time", "start timestamp"],
     "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp", "completion_time", "completion_timestamp", "completion time", "completion timestamp"],
-    "org:resource":["resource", "user", "worker", "agent", "performer"],
-    "cost:amount":["cost", "costs"],
+    "cost:amount":["cost", "costs", "activity_cost", "event_cost"],
     "lifecycle:transition":["lifecycle", "transition", "event_type", "eventtype"]
 }
 
@@ -53,7 +52,7 @@ def transform_data_types(event_log: pd.DataFrame) -> pd.DataFrame:
 
     event_log["cost:amount"] = pd.to_numeric(event_log["cost:amount"], errors="coerce")
     
-    event_log = event_log.sort_values(by=["case:concept:name", "time:timestamp"], ascending=[True, True])
+    # event_log = event_log.sort_values(by=["case:concept:name", "time:timestamp"], ascending=[True, True])
 
     return event_log
 
