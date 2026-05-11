@@ -29,9 +29,6 @@ evaluation_metrics = {
         },
 
         "Semantic Quality": {
-            "Validity": {
-                "Number of violated Validity Requirements": None
-            },
 
             "Completeness": {
                 "Number of violated Completeness Requirements": None
@@ -93,10 +90,6 @@ evaluation_metrics_description = {
     "Soundness": {
         "description": "",
         "unit": "(1=yes, 0=no)"
-    },
-    "Number of violated Validity Requirements": {
-        "description": "",
-        "unit": "(#)"
     },
     "Number of violated Completeness Requirements": {
         "description": "",
