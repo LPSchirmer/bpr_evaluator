@@ -85,19 +85,19 @@ evaluation_metrics = {
 evaluation_metrics_description = {
     "Workflow Net": {
         "description": "",
-        "unit": "(1=yes, 0=no)"
+        "unit": "1=yes, 0=no"
     },
     "Soundness": {
         "description": "",
-        "unit": "(1=yes, 0=no)"
+        "unit": "1=yes, 0=no"
     },
     "Number of violated Completeness Requirements": {
         "description": "",
-        "unit": "(#)"
+        "unit": "#"
     },
     "Number of Nodes": {
         "description": "Represents the total number of nodes in the BPMN model, including activities, events, and gateways.",
-        "unit": "(#)"
+        "unit": "#"
     },
     "Average Gateway Degree": {
         "description": "Represents the average of the number of both incoming and outgoing arcs of the gateway nodes in the BPMN model.",
@@ -105,35 +105,35 @@ evaluation_metrics_description = {
     },
     "Density": {
         "description": "Represents the ratio of the total number of arcs in the BPMN model to the maximum possible number of arcs.",
-        "unit": "(0-1)"
+        "unit": "0-1"
     },
     "Sequentiality": {
         "description": "Represents the degree to which the BPMN model is constructed out of sequences of non-routing elements.",
-        "unit": "(0-1)"
+        "unit": "0-1"
     },
     "Mean cycle time": {
         "description": "",
-        "unit": "(min)"
+        "unit": "min"
     },
     "Mean process costs": {
         "description": "",
-        "unit": "(€)"
+        "unit": "€"
     },
     "Repeatability": {
         "description": "",
-        "unit": "(0-1)"
+        "unit": "0-1"
     },
     "Optionality": {
         "description": "",
-        "unit": "(0-1)"
+        "unit": "0-1"
     },
     "Number of Legal Issues": {
         "description": "Number of internal and external compliance violations",
-        "unit": "(#)"
+        "unit": "#"
     },
     "Implementation Time": {
         "description": "Estimated time (in days) required to implement the redesigned business process within the organization",
-        "unit": "(days)"
+        "unit": "days"
     }
 }
 
