@@ -1,8 +1,9 @@
+# Importing third-party libraries
 import pandas as pd
 
 def calculate_arrival_time_statistics(event_log: pd.DataFrame) -> dict:
     """
-    Calculates statistical measures (min, max, mean, var, std) regarding the case arrival time that can be used for different simulation distributions
+    Calculates statistical measures (min, max, mean, var, std) regarding the case arrival time (in seconds) that can be used for different simulation distributions
     """
     case_times = event_log.groupby("case:concept:name")["time:timestamp"].min().reset_index(name="start_time").sort_values("start_time")
     case_times["case_wait_time"] = case_times["start_time"].diff().dt.total_seconds()
@@ -28,16 +29,59 @@ def get_tasks(event_log: pd.DataFrame) -> list:
     """
     return list(event_log["concept:name"].unique())
 
-def get_resources(event_log: pd.DataFrame) -> list:
+def get_mean_activity_duration(event_log: pd.DataFrame) -> dict:
     """
-    Returns the names of all resources in the event log
+    Calculates the average duration (in seconds) of each activity in the event log. If a 'lifecycle:transition' column is available, the service time is used. 
+    Otherwise, the waiting time is assumed to be zero, meaning the entire time between two consecutive activities is treated as the activity duration.
     """
-    return list(event_log["org:resource"].unique())
+    if "lifecycle:transition" in event_log.columns:
+        event_log = event_log.sort_values(
+            ["case:concept:name", "concept:name", "time:timestamp"]
+        ).copy()
 
-def get_resources_per_task(event_log: pd.DataFrame) -> dict:
-    """
-    Returns a dictionary with all tasks and its associated resources in the event log
-    """
-    return event_log.groupby("concept:name")["org:resource"].unique().to_dict()
+        event_log["occurrence"] = (
+            event_log.groupby(
+                ["case:concept:name", "concept:name", "lifecycle:transition"]
+            ).cumcount()
+        )
 
-# TODO: Method for calculating the mean time of tasks
+        start = event_log[event_log["lifecycle:transition"] == "start"]
+        end = event_log[event_log["lifecycle:transition"] == "complete"]
+
+        merged = pd.merge(
+            start,
+            end,
+            on=["case:concept:name", "concept:name", "occurrence"],
+            suffixes=("_start", "_end"),
+            how="inner",
+        )
+
+        merged["duration_seconds"] = (
+            merged["time:timestamp_end"] - merged["time:timestamp_start"]
+        ).dt.total_seconds()
+
+        merged["duration_seconds"] = merged["duration_seconds"].fillna(0)
+
+        return merged.groupby("concept:name")["duration_seconds"].mean().to_dict()
+
+    else:
+        event_log = event_log.sort_values(
+            ["case:concept:name", "time:timestamp"]
+        ).copy()
+
+        event_log["duration_seconds"] = (
+            event_log.groupby("case:concept:name")["time:timestamp"]
+            .shift(-1) - event_log["time:timestamp"]
+        ).dt.total_seconds()
+
+        event_log["duration_seconds"] = event_log["duration_seconds"].fillna(0)
+
+        return event_log.groupby("concept:name")["duration_seconds"].mean().to_dict()
+
+def get_costs_per_activity(event_log: pd.DataFrame) -> dict:
+    """
+    Returns the mean cost of each activity in the event log in a dict (key: activity, value: cost)
+    """
+    return (event_log.groupby("concept:name")
+            .agg(mean_costs = ("cost:amount", "mean"))
+            .to_dict()["mean_costs"])
