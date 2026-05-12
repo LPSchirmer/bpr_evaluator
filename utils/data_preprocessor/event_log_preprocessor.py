@@ -46,7 +46,14 @@ def transform_data_types(event_log: pd.DataFrame) -> pd.DataFrame:
     """
     Converts data types into a format suitable for the event log analyzer, sorts it and deletes rows with null values in required columns
     """
-    event_log["time:timestamp"] = pd.to_datetime(event_log["time:timestamp"], errors="coerce")
+    if "time:timestamp" in event_log.columns:
+        event_log["time:timestamp"] = pd.to_datetime(event_log["time:timestamp"], errors="coerce")
+
+    if "time:start_timestamp" in event_log.columns:
+        event_log["time:start_timestamp"] = pd.to_datetime(event_log["time:start_timestamp"], errors="coerce")
+
+    if "time:completion_timestamp" in event_log.columns:
+        event_log["time:completion_timestamp"] = pd.to_datetime(event_log["time:completion_timestamp"], errors="coerce")
 
     event_log["case:concept:name"] = event_log["case:concept:name"].astype(str)
 
