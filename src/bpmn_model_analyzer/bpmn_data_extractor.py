@@ -49,8 +49,10 @@ def get_xor_split_gateway_target_tasks(bpmn_model: pm4py.BPMN) -> dict:
 
                 for flow in out_arcs:
 
-                    path_id = flow.get_id()
-                    tasks = list(get_first_target_tasks_from_gateway(flow))
-                    gateways[node.get_id()][path_id] = tasks
+                    if isinstance(flow, pm4py.BPMN.SequenceFlow):
+
+                        path_id = flow.get_id()
+                        tasks = list(get_first_target_tasks_from_gateway(flow))
+                        gateways[node.get_id()][path_id] = tasks
 
     return gateways
