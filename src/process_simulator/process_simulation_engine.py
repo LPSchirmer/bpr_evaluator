@@ -53,6 +53,12 @@ def start_monte_carlo_simulation(bpmn_model: pm4py.BPMN,
     net, initial_marking, final_marking = pm4py.convert_to_petri_net(bpmn_model)
     stochastic_map = get_map_from_log_and_net(event_log, net, initial_marking, final_marking)
 
+    # If there is no intersection between the as-is process and the redesigned process, manually initialize stochastic map
+    if stochastic_map == {}:
+        for transition in net.transitions:
+            if transition.label:
+                stochastic_map[transition] = None
+
     def get_safe_rate(duration: float) -> float:
         """
         Returns the expected value of the duration of an activity for exponential distribution
