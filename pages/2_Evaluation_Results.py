@@ -116,16 +116,15 @@ if st.session_state.evaluation_results:
                         st.write(f"{medal} **{alt}** ({score:.4f})")
 
         with st.expander("View the BPMN models"):
-            visualizations_folder_path = create_folder_for_upload(st.session_state.folder_path, "visualizations")
 
-            file_path_as_is = create_path_for_created_visualizations(visualizations_folder_path, st.session_state.event_log["event_log_name"])
-            pm4py.save_vis_bpmn(st.session_state.event_log["inductive_bpmn_model"], file_path_as_is)
-            st.image(file_path_as_is, caption=f"BPMN visualization of {st.session_state.event_log['event_log_name']} (as-is process)", width="stretch")
+            file_path_as_is_vis = create_path_for_created_visualizations(st.session_state.visualizations_folder_path, st.session_state.event_log["event_log_name"])
+            pm4py.save_vis_bpmn(st.session_state.event_log["inductive_bpmn_model"], file_path_as_is_vis)
+            st.image(file_path_as_is_vis, caption=f"BPMN visualization of {st.session_state.event_log['event_log_name']} (as-is process)", width="stretch")
 
             for index, (name, data) in enumerate(st.session_state.bpmn_models.items()):
-                file_path_to_be = create_path_for_created_visualizations(visualizations_folder_path, name)
-                pm4py.save_vis_bpmn(data["model"], file_path_to_be)
-                st.image(file_path_to_be, caption=f"BPMN visualization of {name}", width="stretch")
+                file_path_to_be_vis = create_path_for_created_visualizations(st.session_state.visualizations_folder_path, name)
+                pm4py.save_vis_bpmn(data["model"], file_path_to_be_vis)
+                st.image(file_path_to_be_vis, caption=f"BPMN visualization of {name}", width="stretch")
 
     st.header("Detailed Evaluation by Dimension")
 

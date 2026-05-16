@@ -27,6 +27,7 @@ from src.process_elements_mapper import *
 
 # Importing custom utils modules
 from utils.data_preprocessor.event_log_preprocessor import *
+from utils.file_processor.created_file_processor import *
 from utils.file_processor.uploaded_file_processor import *
 from utils.dictionary_helpers import *
 
@@ -41,6 +42,9 @@ if "step" not in st.session_state:
 
 if "folder_path" not in st.session_state:
     st.session_state.folder_path = None
+
+if "visualizations_folder_path" not in st.session_state:
+    st.session_state.visualizations_folder_path = None
 
 if "event_log" not in st.session_state:
     st.session_state.event_log = None
@@ -273,6 +277,9 @@ if not st.session_state.evaluation_results:
 
         st.subheader(entry_stages[1])
         st.warning("If the redesigned BPMN model contains tasks that are already present in the event log of the as-is process, please ensure that they share the exact same names to enable proper mapping.", icon="⚠️")
+        
+        visualizations_folder_path = create_folder_for_upload(st.session_state.folder_path, "visualizations")
+        st.session_state.visualizations_folder_path = visualizations_folder_path
 
         multiple_to_be_processes_columns = st.columns(2)
         with multiple_to_be_processes_columns[0]:
@@ -317,6 +324,12 @@ if not st.session_state.evaluation_results:
                                     expanded = True if not current_model_data["form_submitted"] else False):
 
                         with st.form(f"form_{bpmn_model_name}_{i}"):
+                            
+                            # Visualized BPMN model of process
+                            file_path_vis = create_path_for_created_visualizations(st.session_state.visualizations_folder_path, bpmn_model_name)
+                            pm4py.save_vis_bpmn(current_model_data["model"], file_path_vis)
+                            st.image(file_path_vis, caption=f"BPMN visualization of {bpmn_model_name}", width="stretch")
+                            st.divider()
                             
                             # Tasks section
                             if current_model_data["new_tasks"]:
@@ -431,7 +444,7 @@ if not st.session_state.evaluation_results:
                 st.markdown("**Name of your Organization**")
                 st.text_input(
                     "Type in the name of your organization for contextual data enrichment",
-                    placeholder="E.g. Siemens, Celonis, BAUR Group ...",
+                    placeholder="Name of your organization",
                     key="name_of_organization"
                 )
 
