@@ -86,6 +86,7 @@ def add_event_log_to_session_state(event_log_name: str, event_log: pd.DataFrame)
         "event_log_name": event_log_name,
         "event_log": event_log,
         "tasks": [],
+        "number_of_resources": None,
         "inductive_bpmn_model": None,
         "file_path_bpmn": None,
         "number_of_simulation_runs": None,
@@ -134,7 +135,7 @@ st.set_page_config(page_title="BPRE - Start Evaluation", page_icon=icon, layout=
 
 # Header and description
 st.title(f"{icon} BPRE - Business Process Redesign Evaluator")
-st.markdown("Welcome to the BPRE - **Business Process Redesign Evaluator** - a prototypical instantiation of the reference architecture from my bachelor thesis with the title ...")
+st.markdown("Welcome to the BPRE - **Business Process Redesign Evaluator** - a prototypical instantiation of the reference architecture from my bachelor thesis with the title 'Choosing the Right Path: Ex-Ante Evaluation for Goal-Driven Prioritization or Redesigned Business Process Alternatives'.")
 st.markdown("The BPRE is designed to support process analysts and managers in evaluating the impact of their process redesigns prior to implementation. By leveraging data from event logs of the as-is process and BPMN models of the to-be processes, the BPRE enables a explainable data-driven evaluation of process redesigns, helping analysts make informed decisions and optimize their processes effectively.")
 st.markdown("For more details regarding the evaluation logic, please refer to [this section](#how-does-the-evaluation-work) or simply start the evaluation by uploading your data in the [next section](#start-the-evaluation-by-uploading-your-data).")
 st.divider()
@@ -207,12 +208,15 @@ if not st.session_state.evaluation_results:
 
                 df = drop_rows_with_null_values(df)
 
+                df = pm4py.filter_variants_top_k(df, k=5)
+
                 event_log_name = event_log.name.replace(get_file_extension(event_log.name), "")
 
                 add_event_log_to_session_state(event_log_name, df)
 
                 st.session_state.event_log["tasks"] = get_tasks(st.session_state.event_log["event_log"])
                 st.session_state.event_log["inductive_bpmn_model"] = pm4py.discover_bpmn_inductive(st.session_state.event_log["event_log"])
+                st.session_state.event_log["number_of_resources"] = get_number_of_resources(st.session_state.event_log["event_log"])
 
                 event_log_bpmn_folder_path = create_folder_for_upload(event_log_folder_path, "bpmn_model")
                 file_path = os.path.join(event_log_bpmn_folder_path, st.session_state.event_log["event_log_name"])
@@ -247,7 +251,8 @@ if not st.session_state.evaluation_results:
                                                                {}, 
                                                                {}, 
                                                                st.session_state.event_log["number_of_simulation_runs"], 
-                                                               calculate_arrival_time_statistics(st.session_state.event_log["event_log"])["arrival_time_mean"])
+                                                               calculate_arrival_time_statistics(st.session_state.event_log["event_log"])["arrival_time_mean"],
+                                                               st.session_state.event_log["number_of_resources"])
                 
                 as_is_simulated = rename_columns(as_is_simulated)
                 as_is_simulated_costs = get_costs_per_activity(st.session_state.event_log["event_log"])
@@ -415,7 +420,8 @@ if not st.session_state.evaluation_results:
                                                                   current_model_data["simulation_parameters"]["processing_times"], 
                                                                   current_model_data["simulation_parameters"]["new_gateway_probabilities"], 
                                                                   st.session_state.event_log["number_of_simulation_runs"], 
-                                                                  current_model_data["simulation_parameters"]["arrival_time"])
+                                                                  current_model_data["simulation_parameters"]["arrival_time"],
+                                                                  st.session_state.event_log["number_of_resources"])
                             
                             # Preprocess simulated event log
                             df_sim = rename_columns(df_sim)
