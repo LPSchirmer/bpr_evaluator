@@ -9,9 +9,9 @@ event_log_column_map = {
     "case:concept:name":["case_id", "case", "caseid", "case id", "instance_id", "instance", "instanceid", "instance id", "employee_id"],
     "concept:name":["activity", "activity_name", "event", "event_name", "task", "operation", "step", "event type"],
     "time:timestamp":["timestamp", "time", "datetime", "date", "eventtime"],
-    "time:start_timestamp": ["start_time", "start_timestamp", "start time", "start timestamp"],
-    "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp", "completion_time", "completion_timestamp", "completion time", "completion timestamp"],
-    "cost:amount":["cost", "costs", "activity_cost", "event_cost"],
+    "time:start_timestamp": ["start_time", "start_timestamp", "start time", "start timestamp", "start"],
+    "time:completion_timestamp": ["end_time", "end_timestamp", "end time", "end timestamp", "completion_time", "completion_timestamp", "completion time", "completion timestamp", "complete"],
+    "cost:amount":["cost", "costs", "activity_cost", "event_cost", "cost:total"],
     "lifecycle:transition":["lifecycle", "transition", "event_type", "eventtype"]
 }
 
