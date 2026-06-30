@@ -22,8 +22,8 @@ def calculate_mean_process_costs(event_log: pd.DataFrame) -> float:
     """
     Calculates the mean costs of all process instances in the event log
     """
-    if "lifecycle:transition" in event_log.columns:
-        event_log = event_log[event_log["lifecycle:transition"] == "start"]
+    if ("lifecycle:transition" in event_log.columns) and ("start" in event_log["lifecycle:transition"].unique()) and ("complete" in event_log["lifecycle:transition"].unique()):
+        event_log = event_log[event_log["lifecycle:transition"] == "complete"].copy()
 
     return event_log.groupby("case:concept:name")["cost:amount"].sum().mean()
 
