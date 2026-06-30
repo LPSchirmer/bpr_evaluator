@@ -35,7 +35,8 @@ def start_monte_carlo_simulation(bpmn_model: pm4py.BPMN,
                                  processing_times: dict, 
                                  new_xor_splits: dict, 
                                  num_process_instances: int, 
-                                 arrival_time: float) -> pd.DataFrame:
+                                 arrival_time: float,
+                                 number_of_resources: int) -> pd.DataFrame:
     """
     Performs a monte carlo simulation on a given BPMN model and returns the simulated event log in a df
     """
@@ -138,7 +139,8 @@ def start_monte_carlo_simulation(bpmn_model: pm4py.BPMN,
     parameters = {
         "num_simulations": int(num_process_instances),
         "case_arrival_ratio": float(arrival_time),
-        "provided_stochastic_map": stochastic_map
+        "provided_stochastic_map": stochastic_map,
+        "default_num_resources_per_place": number_of_resources
     }
 
     # Run Simulation with parameters
