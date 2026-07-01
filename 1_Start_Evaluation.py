@@ -167,7 +167,7 @@ if not st.session_state.evaluation_results:
             st.divider()
         st.subheader(entry_stages[0])
 
-        event_log = st.file_uploader("Upload an event log of the as-is process. It should at least contain the following columns: case:concept:name, concept:name, time:timestamp, cost:amount", 
+        event_log = st.file_uploader("Upload an event log of the as-is process. It should at least contain the following columns: case:concept:name, concept:name, time:timestamp, cost:amount, and org:resource.", 
                                      type=["csv", "xes"], 
                                      key="event_log_uploader")
         
