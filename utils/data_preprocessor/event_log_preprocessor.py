@@ -68,7 +68,7 @@ def drop_rows_with_null_values(event_log: pd.DataFrame) -> pd.DataFrame:
     """
     Drops rows in the event log whith null values in required event log columns
     """
-    event_log = event_log.dropna(subset=required_event_log_columns)
+    event_log = event_log.dropna(subset=["case:concept:name", "concept:name", "time:timestamp"])
     return event_log
 
 def restructure_event_log(event_log: pd.DataFrame) -> pd.DataFrame:
