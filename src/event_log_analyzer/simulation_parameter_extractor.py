@@ -31,10 +31,10 @@ def get_tasks(event_log: pd.DataFrame) -> list:
 
 def get_mean_activity_duration(event_log: pd.DataFrame) -> dict:
     """
-    Calculates the average duration (in seconds) of each activity in the event log. If a 'lifecycle:transition' column is available, the service time is used. 
+    Calculates the average duration (in seconds) of each activity in the event log. If a 'lifecycle:transition' column with both 'start' and 'complete' values is available, the service time is used. 
     Otherwise, the waiting time is assumed to be zero, meaning the entire time between two consecutive activities is treated as the activity duration.
     """
-    if "lifecycle:transition" in event_log.columns:
+    if ("lifecycle:transition" in event_log.columns) and ("start" in event_log["lifecycle:transition"].unique()) and ("complete" in event_log["lifecycle:transition"].unique()):
         event_log = event_log.sort_values(
             ["case:concept:name", "concept:name", "time:timestamp"]
         ).copy()
@@ -63,6 +63,20 @@ def get_mean_activity_duration(event_log: pd.DataFrame) -> dict:
         merged["duration_seconds"] = merged["duration_seconds"].fillna(0)
 
         return merged.groupby("concept:name")["duration_seconds"].mean().to_dict()
+    
+    elif ("lifecycle:transition" in event_log.columns) and (event_log["lifecycle:transition"].unique()[0] == "complete"):
+        event_log = event_log.sort_values(
+            ["case:concept:name", "time:timestamp"]
+        ).copy()
+
+        event_log["duration_seconds"] = (
+            event_log["time:timestamp"] - event_log.groupby("case:concept:name")["time:timestamp"]
+            .shift(1)
+        ).dt.total_seconds()
+
+        event_log["duration_seconds"] = event_log["duration_seconds"].fillna(0)
+
+        return event_log.groupby("concept:name")["duration_seconds"].mean().to_dict()
 
     else:
         event_log = event_log.sort_values(
@@ -85,3 +99,9 @@ def get_costs_per_activity(event_log: pd.DataFrame) -> dict:
     return (event_log.groupby("concept:name")
             .agg(mean_costs = ("cost:amount", "mean"))
             .to_dict()["mean_costs"])
+
+def get_number_of_resources(event_log: pd.DataFrame) -> int:
+    """
+    Returns the number of unique resources in the event log
+    """
+    return event_log["org:resource"].nunique()
