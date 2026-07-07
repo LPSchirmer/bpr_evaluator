@@ -29,3 +29,13 @@ def get_resources_per_task(event_log: pd.DataFrame) -> dict:
     Returns a dictionary with all tasks and its associated resources in the event log
     """
     return event_log.groupby("concept:name")["org:resource"].unique().apply(list).to_dict()
+
+def calculate_mean_cycle_time_per_variant(event_log: pd.DataFrame) -> dict:
+    """
+    Returns a dictionary with all variants and its associated mean cycle time (in minutes) in the event log
+    """
+    variants_duration = pm4py.get_variants_paths_duration(event_log)
+    result = variants_duration.groupby("@@variant_column").agg(
+        mean_variant_duration_minutes = ("@@flow_time", lambda x: x.sum()/60)
+    ).to_dict()["mean_variant_duration_minutes"]
+    return result

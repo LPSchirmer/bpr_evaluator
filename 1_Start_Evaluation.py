@@ -566,7 +566,7 @@ if not st.session_state.evaluation_results:
                 
                 as_is_bpmn_model_upload_ai = upload_file_to_llm(st.session_state.event_log["file_path_bpmn"], ".bpmn")
 
-                def compliance_evaluation_ai(bpmn_model, as_is=True):
+                def compliance_evaluation_ai(bpmn_model, event_log, as_is=True):
 
                     resources_data = json.dumps(get_resources_per_task(st.session_state.event_log["event_log"]))
 
@@ -574,9 +574,10 @@ if not st.session_state.evaluation_results:
                             Your task is to evaluate a business process (in BPMN form) against internal and external compliance requirements.
                             Provided input:
                             1. BPMN model: See attached BPMN XML file
-                            2. Resources per task: {resources_data if as_is else "Resources are provided by pools and lanes in the BPMN model"}
-                            3. Research results (External norms): {compliance_evaluation_research.text}
-                            4. Directly provided requirements: See attached documentes
+                            2. Resources per task: {resources_data if as_is else "No resource data provided for the process. Ignore all resource-related compliance requirements."}
+                            3. Mean cycle time in minutes per process variant: {calculate_mean_cycle_time_per_variant(event_log)}
+                            4. Research results (External norms): {compliance_evaluation_research.text}
+                            5. Directly provided requirements: See attached documentes
                             Evaluation rules:
                             You must distinguish between two types of requirements:
                             1. Mandatory evaluation (Internal & external that are explicitly provided)
@@ -607,7 +608,7 @@ if not st.session_state.evaluation_results:
                     )
                     return compliance_evaluation
                 
-                res_parsed = compliance_evaluation_ai(as_is_bpmn_model_upload_ai).parsed
+                res_parsed = compliance_evaluation_ai(as_is_bpmn_model_upload_ai, st.session_state.event_log["event_log"]).parsed
                 st.session_state.event_log["metrics"]["adjusted_metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of Legal Issues"] = res_parsed.violations
                 st.session_state.event_log["ai_explanation"]["Number of Legal Issues"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
                 
@@ -617,7 +618,7 @@ if not st.session_state.evaluation_results:
 
                     bpmn_model_upload_ai = upload_file_to_llm(bpmn_model_data["file_path"], ".bpmn")
 
-                    res_parsed = compliance_evaluation_ai(bpmn_model_upload_ai, as_is=False).parsed
+                    res_parsed = compliance_evaluation_ai(bpmn_model_upload_ai, bpmn_model_data["simulated_event_log"], as_is=False).parsed
                     st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of Legal Issues"] = res_parsed.violations
                     st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Number of Legal Issues"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
 
