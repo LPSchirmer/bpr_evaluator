@@ -65,10 +65,11 @@ if st.session_state.evaluation_results:
                 if score > max_value:
                     max_value = score
 
+            values.append(values[0])
             fig_spider.add_trace(go.Scatterpolar(
                 r=values,
-                theta=categories,
-                fill='toself',
+                theta=categories + [categories[0]],
+                fill='none',
                 name=alt,
                 hovertemplate=f"<b>{alt}</b><br>%{{theta}}<br>Score: %{{r:.4f}}<extra></extra>"
             ))
