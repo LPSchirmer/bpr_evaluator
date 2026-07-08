@@ -20,7 +20,7 @@ from utils.file_processor.uploaded_file_processor import *
 # Page metadata
 icon = "⚙️"
 title = "Evaluation Results"
-st.set_page_config(page_title= f"BPRE - {title}", page_icon=icon, layout="wide")
+st.set_page_config(page_title= f"EAE4GP - {title}", page_icon=icon, layout="wide")
 
 # Start of page content
 st.title(f"{icon} {title}")

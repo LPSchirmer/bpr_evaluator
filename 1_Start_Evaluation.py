@@ -131,13 +131,12 @@ def add_bpmn_model_to_session_state(bpmn_model_name: str, bpmn_model: pm4py.BPMN
 
 # Page metadata
 icon = "📈"
-st.set_page_config(page_title="BPRE - Start Evaluation", page_icon=icon, layout="wide")
+st.set_page_config(page_title="EAE4GP - Start Evaluation", page_icon=icon, layout="wide")
 
 # Header and description
-st.title(f"{icon} BPRE - Business Process Redesign Evaluator")
-st.markdown("Welcome to the BPRE - **Business Process Redesign Evaluator** - a prototypical instantiation of the reference architecture from my bachelor thesis with the title 'Choosing the Right Path: Ex-Ante Evaluation for Goal-Driven Prioritization or Redesigned Business Process Alternatives'.")
-st.markdown("The BPRE is designed to support process analysts and managers in evaluating the impact of their process redesigns prior to implementation. By leveraging data from event logs of the as-is process and BPMN models of the to-be processes, the BPRE enables a explainable data-driven evaluation of process redesigns, helping analysts make informed decisions and optimize their processes effectively.")
-st.markdown("For more details regarding the evaluation logic, please refer to [this section](#how-does-the-evaluation-work) or simply start the evaluation by uploading your data in the [next section](#start-the-evaluation-by-uploading-your-data).")
+st.title(f"{icon} EAE4GP - Ex-Ante Evaluation for Goal-Driven Prioritization of Redesigned Business Process Alternatives")
+st.markdown("Welcome to EAE4GP - a prototypical instantiation of the reference architecture from my bachelor thesis with the title 'Choosing the Right Path: Ex-Ante Evaluation for Goal-Driven Prioritization or Redesigned Business Process Alternatives'.")
+st.markdown("EAE4GP is designed to support process designers in evaluating the impact of their redesigned business processes prior to implementation by prioritizing alternatives based on individual context and goals. Therefore, it provides systematic decision-support regarding which alternative should be chosen and implemented.")
 st.divider()
 
 # Upload section
@@ -618,7 +617,7 @@ if not st.session_state.evaluation_results:
 
                     bpmn_model_upload_ai = upload_file_to_llm(bpmn_model_data["file_path"], ".bpmn")
 
-                    res_parsed = compliance_evaluation_ai(bpmn_model_upload_ai, bpmn_model_data["simulated_event_log"], as_is=False).parsed
+                    res_parsed = compliance_evaluation_ai(bpmn_model_upload_ai, bpmn_model_data["simulated_event_log"][f"simulated_{bpmn_model_name}"], as_is=False).parsed
                     st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of Legal Issues"] = res_parsed.violations
                     st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Number of Legal Issues"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
 
@@ -844,8 +843,3 @@ if not st.session_state.evaluation_results:
 
 else:
     st.success("The evaluation was successful. You can view the evaluation results in the 'Evaluation Results' tab or start a new evaluation by clicking the refresh button in your browser.", icon="✅")
-    
-st.divider()
-
-# Evaluation logic
-st.header("How does the evaluation work?")
