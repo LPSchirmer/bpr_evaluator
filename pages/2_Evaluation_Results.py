@@ -66,9 +66,12 @@ if st.session_state.evaluation_results:
                     max_value = score
 
             values.append(values[0])
+
+            formatted_categories = [category.replace(" ", "<br>") for category in categories]
+
             fig_spider.add_trace(go.Scatterpolar(
                 r=values,
-                theta=categories + [categories[0]],
+                theta=formatted_categories + [formatted_categories[0]],
                 fill='none',
                 name=alt,
                 hovertemplate=f"<b>{alt}</b><br>%{{theta}}<br>Score: %{{r:.4f}}<extra></extra>"
@@ -78,7 +81,18 @@ if st.session_state.evaluation_results:
             polar=dict(
                 radialaxis=dict(
                     visible=True,
-                    range=[0, max_value]
+                    range=[0, max_value],
+                    tickfont=dict(
+                        size=14,
+                        color="black"
+                    )
+                ),
+                angularaxis=dict(
+                    tickfont=dict(
+                        size=16,
+                        color="black",
+                        family="Times New Roman"
+                    )
                 )
             ),
             showlegend=True,
