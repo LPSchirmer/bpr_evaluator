@@ -639,17 +639,21 @@ if not st.session_state.evaluation_results:
                     completeness_requirements_upload_ai.append(completeness_requirement_upload_ai)
                     
                 as_is_bpmn_model_upload_ai = upload_file_to_llm(st.session_state.event_log["file_path_bpmn"], ".bpmn")
+
+                st.session_state.event_log["process_variants"] = get_process_variants(st.session_state.event_log["event_log"])
                         
-                def semantic_evaluation_ai(bpmn_model):
+                def semantic_evaluation_ai(bpmn_model, process_variants):
 
                     semantic_evaluation = client_gemini.models.generate_content(
                         model = os.getenv("GEMINI_MODEL"), 
                         contents = [bpmn_model] + 
                         completeness_requirements_upload_ai + 
-                        ["""Carefully evaluate the attached BPMN model against the provided business process requirements regarding 
+                        [f"""Carefully evaluate the attached BPMN model against the provided business process requirements regarding 
                             the semantic quality criterion 'Completeness'. Completeness means that all relevant elements 
                             (e. g. activities, events, gateways, sequence flows, resources, etc.) 
-                            described in the business process model requirements are actually present in the business process model."""],
+                            described in the business process model requirements are actually present in the business process model.
+                            Paths in the BPMN model: {process_variants}
+                         """],
                         config = types.GenerateContentConfig(
                             system_instruction=system_prompts["semantic_evaluation"],
                             temperature=0.0,
@@ -659,7 +663,7 @@ if not st.session_state.evaluation_results:
                     )
                     return semantic_evaluation
 
-                res_parsed = semantic_evaluation_ai(as_is_bpmn_model_upload_ai).parsed
+                res_parsed = semantic_evaluation_ai(as_is_bpmn_model_upload_ai, st.session_state.event_log["process_variants"]).parsed
                 st.session_state.event_log["metrics"]["adjusted_metrics"]["Process Model Dimension"]["Semantic Quality"]["Completeness"]["Number of violated Completeness Requirements"] = res_parsed.violations
                 st.session_state.event_log["ai_explanation"]["Number of violated Completeness Requirements"] = {item.violated_requirement: item.description for item in res_parsed.explanation}
 
@@ -668,8 +672,9 @@ if not st.session_state.evaluation_results:
                 for bpmn_model_name, bpmn_model_data in st.session_state.bpmn_models.items():
 
                     bpmn_model_upload_ai = upload_file_to_llm(bpmn_model_data["file_path"], ".bpmn")
+                    bpmn_model_data["process_variants"] = get_process_variants(bpmn_model_data["simulated_event_log"][f"simulated_{bpmn_model_name}"])
 
-                    res_parsed = semantic_evaluation_ai(bpmn_model_upload_ai).parsed
+                    res_parsed = semantic_evaluation_ai(bpmn_model_upload_ai, bpmn_model_data["process_variants"]).parsed
                     st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Process Model Dimension"]["Semantic Quality"]["Completeness"]["Number of violated Completeness Requirements"] = res_parsed.violations
                     st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Number of violated Completeness Requirements"] = {item.violated_requirement: item.description for item in res_parsed.explanation}
                 
@@ -702,14 +707,12 @@ if not st.session_state.evaluation_results:
                 )
 
                 st.session_state.event_log["metrics"]["adjusted_metrics"]["Organizational Dimension"]["Schedule Feasability"]["Implementation Time"] = 0
-                st.session_state.event_log["process_variants"] = get_process_variants(st.session_state.event_log["event_log"])
 
                 for bpmn_model_name, bpmn_model_data in st.session_state.bpmn_models.items():
 
                     bpmn_model_upload_ai = upload_file_to_llm(bpmn_model_data["file_path"], ".bpmn")
 
                     bpmn_model_data["degree_of_change"] = calculate_degree_of_change(bpmn_model_data["model"], st.session_state.event_log["event_log"])
-                    bpmn_model_data["process_variants"] = get_process_variants(bpmn_model_data["simulated_event_log"][f"simulated_{bpmn_model_name}"])
 
                     schedule_evaluation = client_gemini.models.generate_content(
                         model = os.getenv("GEMINI_MODEL"), 
