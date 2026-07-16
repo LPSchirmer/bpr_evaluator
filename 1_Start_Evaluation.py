@@ -226,10 +226,7 @@ if not st.session_state.evaluation_results:
 
                 number_of_process_instances = calculate_number_of_process_instances(st.session_state.event_log["event_log"])
 
-                if number_of_process_instances > 1000 and number_of_process_instances <= 2000:
-                    st.session_state.event_log["number_of_simulation_runs"] = number_of_process_instances
-                else:
-                    st.session_state.event_log["number_of_simulation_runs"] = 2000
+                st.session_state.event_log["number_of_simulation_runs"] = 2000
 
                 st.session_state.event_log["metrics"]["as_is_metrics"] = calculate_process_metrics(st.session_state.event_log["event_log"], st.session_state.event_log["inductive_bpmn_model"])
             
