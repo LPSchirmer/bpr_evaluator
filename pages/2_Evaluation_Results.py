@@ -20,7 +20,7 @@ from utils.file_processor.uploaded_file_processor import *
 # Page metadata
 icon = "⚙️"
 title = "Evaluation Results"
-st.set_page_config(page_title= f"EAE4GP - {title}", page_icon=icon, layout="wide")
+st.set_page_config(page_title=title, page_icon=icon, layout="wide")
 
 # Start of page content
 st.title(f"{icon} {title}")
@@ -41,7 +41,7 @@ if st.session_state.evaluation_results:
         st.markdown(f"Redesigned business process alternatives: {redesigned_badges}", text_alignment="center")
 
     st.markdown("To correctly interpret the results, please consider the following note: ")
-    st.info("All values, except for the raw metric values in the detailed metric analysis and simulation deviation section, are normalized on a standardized scale to enable a uniform comparison. This scale ranges from 0 (worst) to 1 (best), so higher values indicate better results. In addition, the sum of all rated alternatives within a single hierarchy level is always equal to the value of its parent criterion, reflecting their absoulte distribution. To get more information about the evaluation, please refer to [this section](/#how-does-the-evaluation-work).", icon="ℹ️")
+    st.info("All values, except for the raw metric values in the detailed metric analysis and simulation deviation section, are normalized on a standardized scale to enable a uniform comparison. This scale ranges from 0 (worst) to 1 (best), so higher values indicate better results. In addition, the sum of all rated alternatives within a single hierarchy level is always equal to the value of its parent criterion, reflecting their absoulte distribution.", icon="ℹ️")
 
     st.header("Global Dimension Evaluation")
 
