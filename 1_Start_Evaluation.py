@@ -794,7 +794,7 @@ if not st.session_state.evaluation_results:
                         st.info("Semantic Quality is evaluated by an LLM. Therefore, if semantic quality is given greater weight, the proportion of the LLM also increases.", icon="ℹ️")
 
                     if main_criteria == "Organizational Dimension":
-                        st.info("Learning and Growth and Implementation Feasability are both evaluated by an LLM. Therefore, the propotion of the LLM is independent of your weights", icon="ℹ️")
+                        st.info("Legal and Schedule Feasability are both evaluated by an LLM. Therefore, the propotion of the LLM is independent of your weights", icon="ℹ️")
 
                     sub_keys = list(sub_criteria.keys())
                     criteria_pairwise_comparisons[main_criteria] = {}
