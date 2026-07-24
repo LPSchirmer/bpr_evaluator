@@ -21,6 +21,8 @@ def find_new_xor_split_gateways(as_is_bpmn: pm4py.BPMN, to_be_bpmn: pm4py.BPMN) 
     """
     as_is = get_xor_split_gateway_target_tasks(as_is_bpmn)
     to_be = get_xor_split_gateway_target_tasks(to_be_bpmn)
+    as_is_number_of_outgoing_flows = get_number_of_outgoing_flows(as_is_bpmn)
+    to_be_number_of_outgoing_flows = get_number_of_outgoing_flows(to_be_bpmn)
 
     target_tasks_as_is = {
         tuple(sorted([task for task_list in paths.values() for task in task_list])) 
@@ -33,5 +35,8 @@ def find_new_xor_split_gateways(as_is_bpmn: pm4py.BPMN, to_be_bpmn: pm4py.BPMN) 
         
         if tuple(sorted(all_tasks_to_be)) not in target_tasks_as_is:
             new_gateways[g_id] = paths_to_be
+        elif tuple(sorted(all_tasks_to_be)) in target_tasks_as_is:
+            if to_be_number_of_outgoing_flows.get(tuple(sorted(all_tasks_to_be))) != as_is_number_of_outgoing_flows.get(tuple(sorted(all_tasks_to_be))):
+                new_gateways[g_id] = paths_to_be
 
     return new_gateways

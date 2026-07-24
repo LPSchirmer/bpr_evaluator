@@ -56,3 +56,18 @@ def get_xor_split_gateway_target_tasks(bpmn_model: pm4py.BPMN) -> dict:
                         gateways[node.get_id()][path_id] = tasks
 
     return gateways
+
+def get_number_of_outgoing_flows(bpmn_model: pm4py.BPMN) -> dict:
+    """
+    Returns a dictionary with the target tasks of the gateways (XOR Split) as keys and the number of outgoing flows as values
+    """
+    number_of_outgoing_flows = {}
+    for node in bpmn_model.get_nodes():
+        if isinstance(node, pm4py.BPMN.ExclusiveGateway):
+            if len(node.get_out_arcs()) > 1:
+                out_arcs = node.get_out_arcs()
+                target_tasks = get_xor_split_gateway_target_tasks(bpmn_model).get(node.get_id(), {})
+
+                number_of_outgoing_flows[tuple(sorted([task for task_list in target_tasks.values() for task in task_list]))] = len(out_arcs)
+
+    return number_of_outgoing_flows
