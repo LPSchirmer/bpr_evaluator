@@ -135,8 +135,8 @@ st.set_page_config(page_title="Start Evaluation", page_icon=icon, layout="wide")
 
 # Header and description
 st.title(f"{icon} Ex-Ante Evaluation for Goal-Driven Prioritization of Redesigned Business Process Alternatives")
-st.markdown("Welcome to the prototypical instantiation of the reference architecture designed in my bachelor thesis, titled 'Choosing the Right Path: Ex-Ante Evaluation for Goal-Driven Prioritization or Redesigned Business Process Alternatives'.")
-st.markdown("This tool is designed to support process designers in evaluating the impact of their redesigned business processes prior to implementation. By prioritizing alternatives based on individual context and goals, it provides systematic decision-support regarding which alternative should be chosen and implemented.")
+st.markdown("Welcome to the prototypical instantiation of the reference architecture designed in my bachelor thesis, titled 'Choosing the Right Path: Ex-Ante Evaluation for Goal-Driven Prioritization of Redesigned Business Process Alternatives'.")
+st.markdown("This tool is designed to support process designers in evaluating their redesigned business processes prior to implementation. By prioritizing alternatives based on individual context and goals, it provides systematic decision-support regarding which alternative should be chosen and implemented.")
 st.divider()
 
 # Upload section
@@ -145,7 +145,7 @@ st.header("Start the Evaluation by uploading your data")
 entry_stages = [
     "1. Upload as-is process",
     "2. Upload to-be processes",
-    "3. Specifiy context",
+    "3. Specify context",
     "4. Weight evaluation criteria"
 ]
 
