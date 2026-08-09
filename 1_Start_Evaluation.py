@@ -98,8 +98,8 @@ def add_event_log_to_session_state(event_log_name: str, event_log: pd.DataFrame)
         },
         "ai_explanation": {
             "Number of violated Completeness Requirements": None,
-            "Number of Legal Issues": None,
-            "Implementation Time": None
+            "Number of violated Compliance Requirements": None,
+            "Required Implementation Time": None
         },
         "process_variants": None       
     }
@@ -122,8 +122,8 @@ def add_bpmn_model_to_session_state(bpmn_model_name: str, bpmn_model: pm4py.BPMN
         "form_submitted": False,
         "ai_explanation": {
             "Number of violated Completeness Requirements": None,
-            "Number of Legal Issues": None,
-            "Implementation Time": None
+            "Number of violated Compliance Requirements": None,
+            "Required Implementation Time": None
         },
         "degree_of_change": None,
         "process_variants": None
@@ -605,8 +605,8 @@ if not st.session_state.evaluation_results:
                     return compliance_evaluation
                 
                 res_parsed = compliance_evaluation_ai(as_is_bpmn_model_upload_ai, st.session_state.event_log["event_log"]).parsed
-                st.session_state.event_log["metrics"]["adjusted_metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of Legal Issues"] = res_parsed.violations
-                st.session_state.event_log["ai_explanation"]["Number of Legal Issues"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
+                st.session_state.event_log["metrics"]["adjusted_metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of violated Compliance Requirements"] = res_parsed.violations
+                st.session_state.event_log["ai_explanation"]["Number of violated Compliance Requirements"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
                 
                 client_gemini.files.delete(name=as_is_bpmn_model_upload_ai.name)
 
@@ -615,8 +615,8 @@ if not st.session_state.evaluation_results:
                     bpmn_model_upload_ai = upload_file_to_llm(bpmn_model_data["file_path"], ".bpmn")
 
                     res_parsed = compliance_evaluation_ai(bpmn_model_upload_ai, bpmn_model_data["simulated_event_log"][f"simulated_{bpmn_model_name}"], as_is=False).parsed
-                    st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of Legal Issues"] = res_parsed.violations
-                    st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Number of Legal Issues"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
+                    st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Organizational Dimension"]["Legal Feasability"]["Number of violated Compliance Requirements"] = res_parsed.violations
+                    st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Number of violated Compliance Requirements"] = {item.violated_compliance_rule: item.description for item in res_parsed.explanation}
 
                     client_gemini.files.delete(name=bpmn_model_upload_ai.name)
 
@@ -703,7 +703,7 @@ if not st.session_state.evaluation_results:
                         )
                 )
 
-                st.session_state.event_log["metrics"]["adjusted_metrics"]["Organizational Dimension"]["Schedule Feasability"]["Implementation Time"] = 0
+                st.session_state.event_log["metrics"]["adjusted_metrics"]["Organizational Dimension"]["Schedule Feasability"]["Required Implementation Time"] = 0
 
                 for bpmn_model_name, bpmn_model_data in st.session_state.bpmn_models.items():
 
@@ -750,8 +750,8 @@ if not st.session_state.evaluation_results:
                     )
 
                     res_parsed = schedule_evaluation.parsed
-                    st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Organizational Dimension"]["Schedule Feasability"]["Implementation Time"] = res_parsed.total_days
-                    st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Implementation Time"] = {item.phase: {"time": item.days_for_phase, "activities": item.activities} for item in res_parsed.schedule_plan}
+                    st.session_state.bpmn_models[bpmn_model_name]["metrics"]["Organizational Dimension"]["Schedule Feasability"]["Required Implementation Time"] = res_parsed.total_days
+                    st.session_state.bpmn_models[bpmn_model_name]["ai_explanation"]["Required Implementation Time"] = {item.phase: {"time": item.days_for_phase, "activities": item.activities} for item in res_parsed.schedule_plan}
 
                     client_gemini.files.delete(name=bpmn_model_upload_ai.name)
 
@@ -794,7 +794,7 @@ if not st.session_state.evaluation_results:
                         st.info("Semantic Quality is evaluated by an LLM. Therefore, if semantic quality is given greater weight, the proportion of the LLM also increases.", icon="ℹ️")
 
                     if main_criteria == "Organizational Dimension":
-                        st.info("Legal and Schedule Feasability are both evaluated by an LLM. Therefore, the propotion of the LLM is independent of your weights", icon="ℹ️")
+                        st.info("Legal and Schedule Feasability are both evaluated by an LLM. Therefore, the proportion of the LLM is independent of your weights", icon="ℹ️")
 
                     sub_keys = list(sub_criteria.keys())
                     criteria_pairwise_comparisons[main_criteria] = {}

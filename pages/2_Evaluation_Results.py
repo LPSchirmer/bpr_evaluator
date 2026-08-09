@@ -276,7 +276,7 @@ if st.session_state.evaluation_results:
                                                             return
                                                             
                                                         for crit, eval_text in criteria_dict.items():
-                                                            if m_name == "Number of Legal Issues":
+                                                            if m_name == "Number of violated Compliance Requirements":
                                                                 st.markdown(f"Violated rule: :red['{crit}']")
 
                                                             else:
@@ -290,10 +290,10 @@ if st.session_state.evaluation_results:
 
                                                     if m_name in ai_explanation_criteria:
 
-                                                        if m_name == "Implementation Time":
+                                                        if m_name == "Required Implementation Time":
                                                             
                                                             if "adjusted as-is process" in alt_name:
-                                                                st.info("As this business process is already implemented, its implementation time is obviously always equal to 0.", icon="ℹ️")
+                                                                st.info("As this business process is already implemented, its required implementation time is obviously always equal to 0.", icon="ℹ️")
                                                                 
                                                             else:
                                                                 with st.expander("View AI Explanation", icon="🤖"):

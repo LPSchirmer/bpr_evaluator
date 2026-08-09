@@ -53,11 +53,11 @@ evaluation_metrics = {
     "Process Dimension": {
 
         "Time": {
-            "Mean cycle time": None
+            "Average lead time": None
         },
 
         "Cost": {
-            "Mean process costs": None
+            "Average process costs": None
         },
 
         "Quality": {
@@ -72,11 +72,11 @@ evaluation_metrics = {
 
     "Organizational Dimension": {
         "Legal Feasability": {
-            "Number of Legal Issues": None
+            "Number of violated Compliance Requirements": None
         },
 
         "Schedule Feasability": {
-            "Implementation Time": None
+            "Required Implementation Time": None
         }   
     }
 }
@@ -111,11 +111,11 @@ evaluation_metrics_description = {
         "description": "Represents the degree to which the BPMN model is constructed out of sequences of non-routing elements.",
         "unit": "0-1"
     },
-    "Mean cycle time": {
+    "Average lead time": {
         "description": "",
         "unit": "min"
     },
-    "Mean process costs": {
+    "Average process costs": {
         "description": "",
         "unit": "€"
     },
@@ -127,11 +127,11 @@ evaluation_metrics_description = {
         "description": "",
         "unit": "0-1"
     },
-    "Number of Legal Issues": {
+    "Number of violated Compliance Requirements": {
         "description": "Number of internal and external compliance violations",
         "unit": "#"
     },
-    "Implementation Time": {
+    "Required Implementation Time": {
         "description": "Estimated time (in days) required to implement the redesigned business process within the organization",
         "unit": "days"
     }
@@ -153,8 +153,8 @@ def calculate_process_metrics(event_log: pd.DataFrame, bpmn_model: pm4py.BPMN) -
     metrics["Process Model Dimension"]["Pragmatic Quality"]["Modifiability"]["Sequentiality"] = calculate_sequentiality(bpmn_model)
 
     # Process metrics
-    metrics["Process Dimension"]["Time"]["Mean cycle time"] = calculate_mean_cycle_time(event_log)
-    metrics["Process Dimension"]["Cost"]["Mean process costs"] = calculate_mean_process_costs(event_log)
+    metrics["Process Dimension"]["Time"]["Average lead time"] = calculate_mean_cycle_time(event_log)
+    metrics["Process Dimension"]["Cost"]["Average process costs"] = calculate_mean_process_costs(event_log)
     metrics["Process Dimension"]["Quality"]["Repeatability"] = calculate_repeatability(event_log)
     metrics["Process Dimension"]["Flexibility"]["Optionality"] = calculate_optionality(event_log)
 

@@ -8,11 +8,11 @@ cost_criteria = {
     "Number of Nodes", 
     "Average Gateway Degree", 
     "Density", 
-    "Mean cycle time", 
-    "Mean process costs", 
+    "Average lead time", 
+    "Average process costs", 
     "Repeatability",
-    "Number of Legal Issues", 
-    "Implementation Time"
+    "Number of violated Compliance Requirements", 
+    "Required Implementation Time"
 }
 
 def parse_fraction(value: str) -> float:
