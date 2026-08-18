@@ -4,10 +4,6 @@ This repository contains the prototypical instantiation of the reference archite
 
 This tool is designed to support process designers in evaluating redesigned business processes prior to implementation. By prioritizing alternatives based on individual context and goals, it provides systematic decision support regarding which alternative should be chosen and implemented.
 
-<video controls width="100%">
-<source src="https://github.com/LPSchirmer/bpr_evaluator/raw/refs/heads/master/demo_video.mp4">
-</video>
-
 ---
 
 ## Requirements
