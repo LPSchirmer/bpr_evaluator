@@ -85,6 +85,13 @@ python -m streamlit run 1_Start_Evaluation.py
 
 ---
 
+## References
+
+- The original as-is event log of the example case is available [here](https://data.4tu.nl/articles/_/12683249/1). For the purpose of this demonstration, Claude Sonnet 5 was instructed to estimate the costs of activities and annotate this information as event attributes in the log. This enriched event log is available in the respective ZIP file.
+- The redesigned business process alternatives of the example case are extracted from [this source](https://doi.org/10.15495/EPub_UBT_00009065).
+
+---
+
 ## Contact
 
 For support, questions, or feedback regarding the repository, don't hesitate to contact me via E-Mail: [lucapaulschirmer@gmail.com](mailto:lucapaulschirmer@gmail.com)
